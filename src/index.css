@@ -1,0 +1,78 @@
+@import "tailwindcss";
+
+:root {
+  font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  color: #f8fafc;
+  background: #020617;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background: #020617;
+}
+
+button,
+input {
+}
+
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.no-scrollbar::-webkit-scrollbar{
+  display: none;
+}
+
+.movie-rail-swiper {
+  position: relative;
+}
+
+
+.movie-rail-swiper .swiper-slide {
+  height: auto;
+}
+
+.movie-rail-swiper .swiper-button-prev,
+.movie-rail-swiper .swiper-button-next {
+  padding: 10px;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 1px splid rgb(255 255 255 / 0.12);
+  background: rgb(2 6 23 / 0.85);
+  color: #fff;
+  backdrop-filter: blur(12px);
+  transition: transform 0.2s ease, background 0.2s ease, opacity 0.2s ease;
+}
+
+.movie-rail-swiper .swiper-button-prev::hover,
+.movie-rail-swiper .swiper-button-next::hover {
+  transform: scale(1.6);
+  background: rgb(15 23 42 / 0.95);
+}
+
+.movie-rail-swiper .swiper-button-prev::after,
+.movie-rail-swiper .swiper-button-next::after {
+  font-size: 16px;
+  font-weight: 900;
+}
+
+
+.movie-rail-swiper .swiper-button-disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+@media (max-width: 640px) {
+  .movie-rail-swiper .swiper-button-prev,
+  .movie-rail-swiper .swiper-button-next {
+    display: none;
+  }
+}
