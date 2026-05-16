@@ -9,6 +9,7 @@ import { ProfilePage } from "../../pages/ProfilePage/ProfilePage";
 import { AppLayout } from "../../shared/components/AppLayout";
 import { PersonDetailsPage } from "../../pages/PersonalDetailsPage/PresonDetailsPage";
 import { CollectionPage } from "../../pages/CollectionPage/CollectionPage";
+import { RequireAuth } from "../../features/auth/components/RequireAuth";
 
 export const AppRouter = () => {
   return (
@@ -26,9 +27,39 @@ export const AppRouter = () => {
             element={<DetailsPage mediaType="tv" />}
           />
           <Route path={ROUTES.personDetails} element={<PersonDetailsPage />} />
-          <Route path={ROUTES.watchlist} element={<WatchlistPage />} />
-          <Route path={ROUTES.favorites} element={<FavotitesPage />} />
-          <Route path={ROUTES.profile} element={<ProfilePage />} />
+          <Route
+            path={ROUTES.watchlist}
+            element={
+              <RequireAuth
+                title="Хочу посмотреть"
+                description="Войдите, чтобы сохранять фильмы и сериалы в личный список."
+              >
+                <WatchlistPage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path={ROUTES.favorites}
+            element={
+              <RequireAuth
+                title="Избранное"
+                description="Войдите, чтобы добавлять фильмы и сериалы в избранное."
+              >
+                <FavotitesPage />
+              </RequireAuth>
+            }
+          />
+          <Route
+            path={ROUTES.profile}
+            element={
+              <RequireAuth
+                title="Личный профиль"
+                description="Войдите, чтобы видеть личную статистику, оценки, заметки и сохранённые фильмы."
+              >
+                <ProfilePage />
+              </RequireAuth>
+            }
+          />
           <Route path={ROUTES.collection} element={<CollectionPage />} />
         </Routes>
       </AppLayout>

@@ -22,6 +22,7 @@ import type { SearchPageState } from "../../features/movies/types/search.types";
 import { useEffect, useState } from "react";
 import { MovieRail } from "../../features/movies/components/MovieRail";
 import { FaPlay } from "react-icons/fa";
+import { useAuthStore } from "../../features/auth/store/authStore";
 
 type DetailsPageProps = {
   mediaType: MediaType;
@@ -177,6 +178,20 @@ const getTrackerStatus = ({
 export const DetailsPage = ({ mediaType }: DetailsPageProps) => {
   const { id } = useParams<{ id: string }>();
   const location = useLocation();
+
+  const user = useAuthStore((state) => state.user);
+  const openAuthModal = useAuthStore((state) => state.openAuthModal);
+
+  const runPrivateAvtion = (action: () => void) => {
+    if (!user) {
+      openAuthModal(
+        "Войдите, чтобы сохранять фильмы, ставить оценки и писать заметки.",
+      );
+      return;
+    }
+
+    action();
+  };
 
   const [selectedTab, setSelectedTab] = useState<DetailsTab | null>(null);
   const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
@@ -395,13 +410,17 @@ export const DetailsPage = ({ mediaType }: DetailsPageProps) => {
                         ? " bg-cyan-400 text-slate-950 hover:bg-cyan-300"
                         : "border border-white/15 text-white hover:bg-white/10",
                     ].join(" ")}
-                    onClick={() => toggleFavorite(libraryItem)}
+                    onClick={() =>
+                      runPrivateAvtion(() => toggleFavorite(libraryItem))
+                    }
                   >
                     {isFavorite ? "В избранном" : "В избранное"}
                   </button>
 
                   <button
-                    onClick={() => toggleWatchlist(libraryItem)}
+                    onClick={() =>
+                      runPrivateAvtion(() => toggleWatchlist(libraryItem))
+                    }
                     className={[
                       "rounded-full px-5 py-3 text-sm font-bold transition",
                       isInWatchlist
@@ -413,7 +432,9 @@ export const DetailsPage = ({ mediaType }: DetailsPageProps) => {
                   </button>
 
                   <button
-                    onClick={() => toggleWatched(libraryItem)}
+                    onClick={() =>
+                      runPrivateAvtion(() => toggleWatched(libraryItem))
+                    }
                     className={[
                       "rounded-full px-5 py-3 text-sm font-bold transition",
                       isWatched
@@ -545,10 +566,13 @@ export const DetailsPage = ({ mediaType }: DetailsPageProps) => {
                     </h3>
 
                     <p className="mt-3 text-sm leading-6 text-slate-400">
-                      Этот фильм входит в коллекцию. Открой страницу, чтобы посмотреть все части.
+                      Этот фильм входит в коллекцию. Открой страницу, чтобы
+                      посмотреть все части.
                     </p>
 
-                    <span className="mt-4 inline-flex rounded-full bg-white/10 px-4 py-2 text-sm font-bold text-white transition group-hover:bg-white/15">Смотреть коллекцию</span>
+                    <span className="mt-4 inline-flex rounded-full bg-white/10 px-4 py-2 text-sm font-bold text-white transition group-hover:bg-white/15">
+                      Смотреть коллекцию
+                    </span>
                   </Link>
                 ) : null}
               </div>
@@ -603,7 +627,9 @@ export const DetailsPage = ({ mediaType }: DetailsPageProps) => {
 
                     <button
                       type="button"
-                      onClick={() => setSelectedTab("notes")}
+                      onClick={() =>
+                        runPrivateAvtion(() => setSelectedTab("notes"))
+                      }
                       className="mt-5 w-full rounded-full bg-cyan-400 px-5 py-3 text-sm font-bold text-slate-950 transition hover:bg-cyan-300"
                     >
                       Редактировать оценку и заметку
@@ -882,7 +908,7 @@ export const DetailsPage = ({ mediaType }: DetailsPageProps) => {
             </div>
           ) : null}
 
-          {activeTab === "notes" ? (
+          {activeTab === "notes" && user ? (
             <UserMediaPanel
               id={data.id}
               mediaType={mediaType}
@@ -892,7 +918,29 @@ export const DetailsPage = ({ mediaType }: DetailsPageProps) => {
               onChangeNote={(note) => setNote(data.id, mediaType, note)}
               onClear={() => clearUserEntry(data.id, mediaType)}
             />
-          ) : null}
+          ) : (
+            <div className="rounded-3xl border border-white/10 bg-white/5 p-8 text-center">
+              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-cyan-300">
+                My Tracker
+              </p>
+              <h2 className="mb-3 text-2xl font-bold text-white">
+                Войдите, чтобы писать заметки.
+              </h2>
+
+              <p className="mb-6 mx-auto max-w-2xl text-sm leading-6 text-slate-400">
+                оценки и заметки относятся к личному профилю, поэтому они
+                доступны только фвторизованному пользователю.
+              </p>
+
+              <button
+                type="button"
+                onClick={() => openAuthModal("Войдите, чтобы поставить оценку и оставить заметку.")}
+                className="rounded-full bg-cyan-400 px-6 py-3 text-sm font-bold text-slate-950 transition hover:bg-cyan-300"
+              >
+                Войти
+              </button>
+            </div>
+          )}
         </div>
       </div>
 

@@ -14,6 +14,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { useAuthStore } from "../../features/auth/store/authStore";
+import { ROUTES } from "../../app/router/routes";
 
 type GenreStat = {
   id: number;
@@ -77,6 +79,9 @@ const formatDate = (date?: string) => {
 };
 
 export const ProfilePage = () => {
+  const user = useAuthStore((state) => state.user);
+  const logout = useAuthStore((state) => state.logout);
+
   const favorites = useUserLibraryStore((state) => state.favorites);
   const watchlist = useUserLibraryStore((state) => state.watchlist);
   const watched = useUserLibraryStore((state) => state.watched);
@@ -157,16 +162,65 @@ export const ProfilePage = () => {
           <div className="absolute bottom-0 left-10 h-44 w-44 rounded-full bg-violet-400/30 blur-3xl" />
 
           <div className="relative">
-            <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-cyan-300">
-              Movie tracker
-            </p>
-            <h1 className="mb-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">
-              Личный профиль
-            </h1>
-            <p className="mb-8 max-w-3xl text-base leading-7 text-slate-300">
-              Здесь собирается твоя личная статистика: сохранённые фильмы и
-              сериалы, оценки, заметки, просмотренное и жанровые предпочтения.
-            </p>
+            <div className="mb-8 grid gap-6 lg:grid-cols-[minmax(0,1fr)_360px]">
+              <div>
+                <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-cyan-300">
+                  Movie tracker
+                </p>
+                <h1 className="mb-4 text-4xl font-bold tracking-tight text-white sm:text-5xl">
+                  Личный профиль
+                </h1>
+                <p className="max-w-3xl text-base leading-7 text-slate-300">
+                  Здесь собирается твоя личная статистика: сохранённые фильмы и
+                  сериалы, оценки, заметки, просмотренное и жанровые
+                  предпочтения.
+                </p>
+              </div>
+              <div className="rounded-3xl border border-white/10 bg-slate-950/70 p-5 shadow-xl shadow-black/30">
+                <div className="mb-5 flex items-center gap-4">
+                  <div className="flex h-14 w-14 items-center justify-center rounded-2xl bg-cyan-400 text-xl font-bold text-slate-950">
+                    {user?.name?.charAt(0).toUpperCase() || "U"}
+                  </div>
+
+                  <div className="min-w-0">
+                    <p className="truncate text-lg font-bold text-white">
+                      {user?.name || "Пользователь"}
+                    </p>
+                    <p className="truncate text-sm font-bold text-white">
+                      {user?.email || "demo@mail.com"}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="mb-5 grid grid-cols-2 gap-3">
+                  <div className="rounded-2xl bg-white/5 p-3">
+                    <p className="mb-1 text-xs text-slate-500">Статус</p>
+                    <p className="font-bold text-emerald-300">Авторизован</p>
+                  </div>
+                  <div className="rounded-2xl bg-white/5 p-3">
+                    <p className="mb-1 text-xs text-slate-500">Режим</p>
+                    <p className="font-bold text-cyan-300">Demo</p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-3">
+                  <Link
+                    to={ROUTES.search}
+                    className="rounded-2xl bg-cyan-400 px-4 py-3 text-center text-sm font-bold text-slate-950 transition hover:bg-cyan-300"
+                  >
+                    Найти новый фильм
+                  </Link>
+
+                  <button
+                    type="button"
+                    onClick={logout}
+                    className="rounded-2xl border border-red-400/30 px-4 py-3 text-sm font-bold text-red-200 transition hover:bg-red-500/10"
+                  >
+                    Выйти из профиля
+                  </button>
+                </div>
+              </div>
+            </div>
 
             <div className="mb-4 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
               <div className="rounded-2xl border border-white/10 bg-slate-950/60 p-5">
@@ -294,7 +348,7 @@ export const ProfilePage = () => {
                   Фильмы: {moviesCount}
                 </span>
                 <span className="rounded-full bg-emerald-400/15 px-3 py-1 font-semibold text-emerald-200">
-                  Фильмы: {tvCount}
+                  Сериалы: {tvCount}
                 </span>
               </div>
             </div>
@@ -333,7 +387,7 @@ export const ProfilePage = () => {
                       />
 
                       <Tooltip
-                        cursor={{fill: "rgba(255,255,255,0.08)"}}
+                        cursor={{ fill: "rgba(255,255,255,0.08)" }}
                         contentStyle={{
                           background: "#020617",
                           border: "1px solid rgba(255,255,255,0.12)",
