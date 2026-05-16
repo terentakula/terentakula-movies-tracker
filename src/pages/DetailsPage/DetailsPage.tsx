@@ -182,7 +182,7 @@ export const DetailsPage = ({ mediaType }: DetailsPageProps) => {
   const user = useAuthStore((state) => state.user);
   const openAuthModal = useAuthStore((state) => state.openAuthModal);
 
-  const runPrivateAvtion = (action: () => void) => {
+  const runPrivateAction = (action: () => void) => {
     if (!user) {
       openAuthModal(
         "Войдите, чтобы сохранять фильмы, ставить оценки и писать заметки.",
@@ -305,9 +305,11 @@ export const DetailsPage = ({ mediaType }: DetailsPageProps) => {
   const visibleTabs = tabs.filter((tab) => tab.visible);
 
   const activeTab =
-    selectedTab && visibleTabs.some((tab) => tab.id === selectedTab)
-      ? selectedTab
-      : "overview";
+    selectedTab === "notes" && !user
+      ? "overview"
+      : selectedTab && visibleTabs.some((tab) => tab.id === selectedTab)
+        ? selectedTab
+        : "overview";
 
   const libraryItem: LibraryItem = {
     id: data.id,
@@ -411,7 +413,7 @@ export const DetailsPage = ({ mediaType }: DetailsPageProps) => {
                         : "border border-white/15 text-white hover:bg-white/10",
                     ].join(" ")}
                     onClick={() =>
-                      runPrivateAvtion(() => toggleFavorite(libraryItem))
+                      runPrivateAction(() => toggleFavorite(libraryItem))
                     }
                   >
                     {isFavorite ? "В избранном" : "В избранное"}
@@ -419,7 +421,7 @@ export const DetailsPage = ({ mediaType }: DetailsPageProps) => {
 
                   <button
                     onClick={() =>
-                      runPrivateAvtion(() => toggleWatchlist(libraryItem))
+                      runPrivateAction(() => toggleWatchlist(libraryItem))
                     }
                     className={[
                       "rounded-full px-5 py-3 text-sm font-bold transition",
@@ -433,7 +435,7 @@ export const DetailsPage = ({ mediaType }: DetailsPageProps) => {
 
                   <button
                     onClick={() =>
-                      runPrivateAvtion(() => toggleWatched(libraryItem))
+                      runPrivateAction(() => toggleWatched(libraryItem))
                     }
                     className={[
                       "rounded-full px-5 py-3 text-sm font-bold transition",
@@ -514,7 +516,16 @@ export const DetailsPage = ({ mediaType }: DetailsPageProps) => {
                 <button
                   key={tab.id}
                   type="button"
-                  onClick={() => setSelectedTab(tab.id)}
+                  onClick={() => {
+                    if (tab.id === "notes" && !user) {
+                      openAuthModal(
+                        "Войдите, чтобы поставить оценку и оставить заметку.",
+                      );
+                      setSelectedTab("overview");
+                      return;
+                    }
+                    setSelectedTab(tab.id);
+                  }}
                   className={[
                     "shrink-0 rounded-full px-4 py-2 text-sm font-bold transition",
                     activeTab === tab.id
@@ -628,7 +639,7 @@ export const DetailsPage = ({ mediaType }: DetailsPageProps) => {
                     <button
                       type="button"
                       onClick={() =>
-                        runPrivateAvtion(() => setSelectedTab("notes"))
+                        runPrivateAction(() => setSelectedTab("notes"))
                       }
                       className="mt-5 w-full rounded-full bg-cyan-400 px-5 py-3 text-sm font-bold text-slate-950 transition hover:bg-cyan-300"
                     >
@@ -908,39 +919,47 @@ export const DetailsPage = ({ mediaType }: DetailsPageProps) => {
             </div>
           ) : null}
 
-          {activeTab === "notes" && user ? (
-            <UserMediaPanel
-              id={data.id}
-              mediaType={mediaType}
-              rating={userEntry?.rating ?? null}
-              note={userEntry?.note ?? ""}
-              onChangeRating={(rating) => setRating(data.id, mediaType, rating)}
-              onChangeNote={(note) => setNote(data.id, mediaType, note)}
-              onClear={() => clearUserEntry(data.id, mediaType)}
-            />
-          ) : (
-            <div className="rounded-3xl border border-white/10 bg-white/5 p-8 text-center">
-              <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-cyan-300">
-                My Tracker
-              </p>
-              <h2 className="mb-3 text-2xl font-bold text-white">
-                Войдите, чтобы писать заметки.
-              </h2>
+          {activeTab === "notes" ? (
+            user ? (
+              <UserMediaPanel
+                id={data.id}
+                mediaType={mediaType}
+                rating={userEntry?.rating ?? null}
+                note={userEntry?.note ?? ""}
+                onChangeRating={(rating) =>
+                  setRating(data.id, mediaType, rating)
+                }
+                onChangeNote={(note) => setNote(data.id, mediaType, note)}
+                onClear={() => clearUserEntry(data.id, mediaType)}
+              />
+            ) : (
+              <div className="rounded-3xl border border-white/10 bg-white/5 p-8 text-center">
+                <p className="mb-3 text-sm font-semibold uppercase tracking-[0.25em] text-cyan-300">
+                  My Tracker
+                </p>
+                <h2 className="mb-3 text-2xl font-bold text-white">
+                  Войдите, чтобы писать заметки.
+                </h2>
 
-              <p className="mb-6 mx-auto max-w-2xl text-sm leading-6 text-slate-400">
-                оценки и заметки относятся к личному профилю, поэтому они
-                доступны только фвторизованному пользователю.
-              </p>
+                <p className="mb-6 mx-auto max-w-2xl text-sm leading-6 text-slate-400">
+                  оценки и заметки относятся к личному профилю, поэтому они
+                  доступны только фвторизованному пользователю.
+                </p>
 
-              <button
-                type="button"
-                onClick={() => openAuthModal("Войдите, чтобы поставить оценку и оставить заметку.")}
-                className="rounded-full bg-cyan-400 px-6 py-3 text-sm font-bold text-slate-950 transition hover:bg-cyan-300"
-              >
-                Войти
-              </button>
-            </div>
-          )}
+                <button
+                  type="button"
+                  onClick={() =>
+                    openAuthModal(
+                      "Войдите, чтобы поставить оценку и оставить заметку.",
+                    )
+                  }
+                  className="rounded-full bg-cyan-400 px-6 py-3 text-sm font-bold text-slate-950 transition hover:bg-cyan-300"
+                >
+                  Войти
+                </button>
+              </div>
+            )
+          ) : null}
         </div>
       </div>
 
