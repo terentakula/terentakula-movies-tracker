@@ -44,11 +44,11 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
   const logout = useAuthStore((state) => state.logout);
 
 
-  const handleProtectedClick = (
+  const handleNavClick  = (
     event: React.MouseEvent<HTMLAnchorElement>,
     isProtected?: boolean,
   ) => {
-    if (!isProtected || user) {
+    if (isProtected || !user) {
       event.preventDefault()
       openAuthModal("Войдите, чтобы открыть этот раздел.");
     }
@@ -77,7 +77,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                   key={item.to}
                   to={item.to}
                   onClick={(e) => {
-                    handleProtectedClick(e, item.protected);
+                    handleNavClick(e, item.protected);
                   }}
                   className={({ isActive }) =>
                     [
@@ -144,7 +144,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                   key={item.to}
                   to={item.to}
                   onClick={(e) => {
-                    handleProtectedClick(e, item.protected);
+                    handleNavClick(e, item.protected);
                   }}
                   className={({ isActive }) =>
                     [
