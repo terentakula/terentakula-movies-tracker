@@ -1,4 +1,4 @@
-import React, {  useState, type ReactNode } from "react";
+import {  useState, type ReactNode } from "react";
 import { ROUTES } from "../../app/router/routes";
 import { NavLink } from "react-router-dom";
 import { useAuthStore } from "../../features/auth/store/authStore";
@@ -48,7 +48,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
     event: React.MouseEvent<HTMLAnchorElement>,
     isProtected?: boolean,
   ) => {
-    if (isProtected || !user) {
+    if (isProtected && !user) {
       event.preventDefault()
       openAuthModal("Войдите, чтобы открыть этот раздел.");
     }
@@ -119,7 +119,7 @@ export const AppLayout = ({ children }: AppLayoutProps) => {
                     "Войдите, чтобы пользоваться личными функциями.",
                   )
                 }
-                className="rounded-full bg-cyan-400 px-4 py-2 text-sm font-bold text-slate-950 transition hover:bg-cean-300"
+                className="rounded-full bg-cyan-400 px-4 py-2 text-sm font-bold text-slate-950 transition hover:bg-cyan-300"
               >
                 Войти
               </button>
