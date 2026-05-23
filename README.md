@@ -1,73 +1,48 @@
-# React + TypeScript + Vite
+# Terentakula Movies Tracker
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules
+**Terentakula Movies Tracker** - это портфолио-прект на React и TypeScript для поиска фильмов и сериалов, просмотра подробной информации и ведения личной библиотеки.
+Приложение работает с TMDB API и позволяет пользователю искать фильмы и сериалы, открывать детальные страницы, смотреть трейлеры, просматривать актёров, добавлять фильмы и личные списки, ставить оценки и писать заметки.
 
-Currently, two official plugins are available:
+Демо: 
+https://terentakula.github.io/terentakula-movies-tracker/
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Возможности
 
-## React Compiler
+- Поиск фильмов и сериалов
+- Фильтрация по типу контента: фильмы, сериалы, всё
+- Сортировка результатов
+- Главная страница с подборками популярных и рейтинговых фильмов/сериалов
+- Детальная страница фильма или сериала
+- Трейлеры и видео
+- Галерея изображений
+- Актёрский состав
+- Страницы актёров
+- Фотографии актёров
+- Похожие фильмы и сериалы
+- Коллекции фильмов
+- Личная библиотека пользователя:
+    - избранное
+    - хочу посмотреть
+    - просмотрено
+    - оценки
+    - заметки
+- Профиль пользователя со статистикой
+- Авторизация через Supabase
+- Защита личных разделов для гостей
+- Адаптивная верстка
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## Технологии
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
-
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- React
+- TypeScript
+- Vite
+- React Router
+- TanStack Query
+- Zustand
+- Supabase Auth
+- Axios
+- Tailwind CSS
+- Recharts
+- Swiper
+- TMDB API
+- GitHub Pages
