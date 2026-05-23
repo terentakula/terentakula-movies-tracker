@@ -69,8 +69,14 @@ export const UserMediaPanel = ({
         </label>
         <textarea
             id="user-note"
-            value={note}
-            onChange={(e) => onChangeNote(e.target.value)}
+            defaultValue={note}
+            onBlur={(e) => {
+              const nextNote = e.target.value
+
+              if (nextNote !== note) {
+                onChangeNote(nextNote)
+              }
+            }}
             placeholder="Например: посмотреть с друзьями, пересмотреть финал..."
             rows={5}
             className="w-full resize-none rounded-3xl border border-white/10 bg-slate-950 p-4 text-sm leading-6 text-white outline-none transition placeholder:text-slate-500 focus:border-cyan-300"
@@ -88,7 +94,7 @@ export const UserMediaPanel = ({
             </button>
 
             <p className="text-sm text-slate-500">
-                Сохраняется автоматически.
+                Сохраняется после выхода из поля заметки.
             </p>
         </div>
       ) : null}

@@ -2,6 +2,7 @@ import { useMemo, useState } from "react";
 import { LibraryGrid } from "../../features/user-library/components/LibraryGrid";
 import { useUserLibraryStore } from "../../features/user-library/store/userLibraryStore";
 import type { LibraryItem } from "../../features/user-library/types/userLibrary.types";
+import { useAuthStore } from "../../features/auth/store/authStore";
 
 type MediaFilter = "all" | "movie" | "tv";
 type SortType = "rating" | "year" | "title";
@@ -39,6 +40,7 @@ const getAverageRating = (items: LibraryItem[]) => {
 };
 
 export const WatchlistPage = () => {
+  const user = useAuthStore((state) => state.user)
   const [mediaFilter, setMediaFilter] = useState<MediaFilter>("all");
   const [sortType, setSortType] = useState<SortType>("rating");
 
@@ -166,7 +168,7 @@ export const WatchlistPage = () => {
         items={filteredItems}
         emptyTitle="Список пока пуст"
         emptyDescription="Откройте фильм или сериал и нажмите кнопку 'Хочу посмотреть'."
-        onRemove={(item) => removeFromWatchlist(item.id, item.mediaType)}
+        onRemove={(item) => void removeFromWatchlist(item.id, item.mediaType, user?.id)}
       />
     </section>
   );

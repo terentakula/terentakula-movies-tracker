@@ -26,3 +26,32 @@ export type UserMediaEntry = {
     updatedAt: string
 }
 
+export type UserMediaItemRow = {
+    id: string
+    user_id: string
+
+    tmdb_id: number
+    media_type: MediaType
+
+    title: string
+    overview: string
+    poster_path: string | null
+    backdrop_path: string | null
+    vote_average: number
+    release_date: string | null
+    genres?: {
+        id: number
+        name: string
+    }[]
+
+    is_favorite: boolean
+    is_watchlist: boolean
+    is_watched: boolean
+
+    rating: number | null
+    note: string
+
+    created_at: string
+    updated_at:string
+}
+

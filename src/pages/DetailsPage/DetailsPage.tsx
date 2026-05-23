@@ -413,7 +413,9 @@ export const DetailsPage = ({ mediaType }: DetailsPageProps) => {
                         : "border border-white/15 text-white hover:bg-white/10",
                     ].join(" ")}
                     onClick={() =>
-                      runPrivateAction(() => toggleFavorite(libraryItem))
+                      runPrivateAction(() => {
+                        void toggleFavorite(libraryItem, user?.id);
+                      })
                     }
                   >
                     {isFavorite ? "В избранном" : "В избранное"}
@@ -421,7 +423,9 @@ export const DetailsPage = ({ mediaType }: DetailsPageProps) => {
 
                   <button
                     onClick={() =>
-                      runPrivateAction(() => toggleWatchlist(libraryItem))
+                      runPrivateAction(() => {
+                        void toggleWatchlist(libraryItem, user?.id);
+                      })
                     }
                     className={[
                       "rounded-full px-5 py-3 text-sm font-bold transition",
@@ -435,7 +439,9 @@ export const DetailsPage = ({ mediaType }: DetailsPageProps) => {
 
                   <button
                     onClick={() =>
-                      runPrivateAction(() => toggleWatched(libraryItem))
+                      runPrivateAction(() => {
+                        void toggleWatched(libraryItem, user?.id);
+                      })
                     }
                     className={[
                       "rounded-full px-5 py-3 text-sm font-bold transition",
@@ -927,10 +933,14 @@ export const DetailsPage = ({ mediaType }: DetailsPageProps) => {
                 rating={userEntry?.rating ?? null}
                 note={userEntry?.note ?? ""}
                 onChangeRating={(rating) =>
-                  setRating(data.id, mediaType, rating)
+                  void setRating(data.id, mediaType, rating, user?.id)
                 }
-                onChangeNote={(note) => setNote(data.id, mediaType, note)}
-                onClear={() => clearUserEntry(data.id, mediaType)}
+                onChangeNote={(note) =>
+                  void setNote(data.id, mediaType, note, user?.id)
+                }
+                onClear={() =>
+                  void clearUserEntry(data.id, mediaType, user?.id)
+                }
               />
             ) : (
               <div className="rounded-3xl border border-white/10 bg-white/5 p-8 text-center">

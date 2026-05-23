@@ -564,7 +564,7 @@ export const ProfilePage = () => {
           items={watched}
           emptyTitle="Просмотренных пока нет"
           emptyDescription="Откройте фильм или сериал и нажмите 'Отметить просмотренным'."
-          onRemove={(item) => removeFromWatched(item.id, item.mediaType)}
+          onRemove={(item) => void removeFromWatched(item.id, item.mediaType, user?.id)}
         />
       </div>
     </section>
