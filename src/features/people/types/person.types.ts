@@ -19,6 +19,20 @@ export type PersonExternalIds = {
     facebook_id: string | null
 }
 
+export type PersonImage = {
+    aspect_ratio: number
+    height: number
+    iso_639_1: string | null
+    file_path: string
+    vote_average: number
+    vote_count: number
+    width: number
+}
+
+export type PersonImagesResponse = {
+    profiles: PersonImage[]
+}
+
 export type PersonDetails = {
     id: number
     name: string
@@ -33,4 +47,5 @@ export type PersonDetails = {
     also_known_as: string[]
     combined_credits?: PersonCombinedCreditsResponse
     external_ids?: PersonExternalIds
+    images?: PersonImagesResponse
 }

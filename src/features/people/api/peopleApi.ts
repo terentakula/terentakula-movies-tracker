@@ -1,7 +1,7 @@
 import { tmdbClient } from "../../../shared/api/tmdbClient";
 import type { PersonDetails } from "../types/person.types";
 
-const PERSON_APPEND_TO_RESPONSE = "combined_credits,external_ids";
+const PERSON_APPEND_TO_RESPONSE = "combined_credits,external_ids,images";
 
 export const peopleApi = {
   getPresonDetails: async (id: string) => {

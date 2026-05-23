@@ -1,12 +1,13 @@
 import { Link, useParams } from "react-router-dom";
 import { usePersonDetails } from "../../features/people/hooks/usePersonDetails";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { LoadingState } from "../../shared/ui/LoadingState";
 import { ErrorState } from "../../shared/ui/ErrorState";
 import { EmptyState } from "../../shared/ui/EmptyState";
 import { getTmdbImageUrl } from "../../shared/config/tmdb";
 import { ROUTES } from "../../app/router/routes";
 import { MovieRail } from "../../features/movies/components/MovieRail";
+import type { PersonImage } from "../../features/people/types/person.types";
 
 const formatDate = (date: string | null) => {
   if (!date) {
@@ -41,8 +42,15 @@ const getAge = (birthday: string | null, deathday: string | null) => {
   return age;
 };
 
+const getPersonGalleryImages = (images: PersonImage[] = []) => {
+  return [...images]
+    .sort((a, b) => b.vote_average - a.vote_average)
+    .slice(0, 8);
+};
+
 export const PersonDetailsPage = () => {
   const { id } = useParams<{ id: string }>();
+  const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
 
   const { data, isLoading, isError } = usePersonDetails(id);
 
@@ -63,6 +71,10 @@ export const PersonDetailsPage = () => {
         .slice(0, 18) ?? []
     );
   }, [data?.combined_credits?.cast]);
+
+  const personPhotos = useMemo(() => {
+    return getPersonGalleryImages(data?.images?.profiles);
+  }, [data?.images?.profiles]);
 
   if (isLoading) {
     return <LoadingState />;
@@ -140,7 +152,7 @@ export const PersonDetailsPage = () => {
 
                 {data.deathday ? (
                   <div className="rounded-2xl bg-white/5 p-4">
-                    <p className="text-sm text-slate-400">Возраст</p>
+                    <p className="text-sm text-slate-400">Дата смерти</p>
                     <p className="mt-1 font-semibold">
                       {formatDate(data.deathday)}
                     </p>
@@ -202,13 +214,57 @@ export const PersonDetailsPage = () => {
 
             <div className="mt-4 flex flex-wrap gap-2">
               {data.also_known_as.slice(0, 12).map((name) => (
-                <span key={name} className="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-slate-200">
+                <span
+                  key={name}
+                  className="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-slate-200"
+                >
                   {name}
                 </span>
               ))}
             </div>
           </div>
-        ):null}
+        ) : null}
+
+        {personPhotos.length ? (
+          <div className="border-t border-white/10 p-5 sm:p-8">
+            <div className="mb-6">
+              <h2 className="mb-2 text-2xl font-bold">Фотографии</h2>
+              <p className="text-sm text-slate-400">
+                Профильные изображения актёра из TMDB
+              </p>
+            </div>
+
+            <div className="grid gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
+              {personPhotos.map((photo) => {
+                const photoUrl = getTmdbImageUrl(photo.file_path, "w342");
+                const fullPhotoUrl = getTmdbImageUrl(
+                  photo.file_path,
+                  "original",
+                );
+
+                if (!photoUrl || !fullPhotoUrl) {
+                  return null;
+                }
+
+                return (
+                  <button
+                    key={photo.file_path}
+                    type="button"
+                    onClick={() => setSelectedImageUrl(fullPhotoUrl)}
+                    className="group overflow-hidden rounded-2xl border border-white/10 bg-slate-900/80 text-left transition hover:-translate-y-1 hover:border-cyan-400/50"
+                  >
+                    <img
+                      src={photoUrl}
+                      alt={data.name}
+                      loading="lazy"
+                      className="aspect-[2/3] w-full object-cover"
+                    />
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        ) : null}
       </div>
 
       {movieCredits.length ? (
@@ -218,7 +274,7 @@ export const PersonDetailsPage = () => {
           items={movieCredits}
           mediaType="movie"
         />
-      ):null}
+      ) : null}
 
       {tvCredits.length ? (
         <MovieRail
@@ -227,7 +283,22 @@ export const PersonDetailsPage = () => {
           items={tvCredits}
           mediaType="tv"
         />
-      ): null}
+      ) : null}
+
+      {selectedImageUrl ? (
+        <button
+          type="button"
+          onClick={() => setSelectedImageUrl(null)}
+          className="fixed inset-0 z-[100] flex items-center justify-center bg-black/85 p-4 backdrop-blur-sm"
+          aria-label="Закрыть изображение"
+        >
+          <img
+            src={selectedImageUrl}
+            alt={data.name}
+            className="max-h-[90vh] max-w-full rounded-3xl object-contain shadow-2xl shadow-black"
+          />
+        </button>
+      ) : null}
     </section>
   );
 };
